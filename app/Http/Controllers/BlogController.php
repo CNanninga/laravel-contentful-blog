@@ -1,27 +1,39 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Facades\Blog;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class BlogController extends Controller
 {
-    const POSTS_PER_PAGE = 5;
+    const POSTS_PER_PAGE = 10;
 
     public function list(int $page = 1): Response
     {
+        $skip = ($page - 1)  * self::POSTS_PER_PAGE;
+
+        list($posts, $totalPosts) = Blog::getPosts(self::POSTS_PER_PAGE, $skip);
+
+        $prevPageUrl = $nextPageUrl = null;
+        if ($page > 1) {
+            $prevPage = $page - 1;
+            $prevPageUrl = route('list', ['page' => $prevPage]);
+        }
+        if ($totalPosts > ($page * self::POSTS_PER_PAGE)) {
+            $nextPage = $page + 1;
+            $nextPageUrl = route('list', ['page' => $nextPage]);
+        }
+
+        $postsData = [];
+        foreach ($posts as $post) {
+            $postsData[] = $post->getData();
+        }
+
         $props = [
-            'posts' => [
-                [
-                    'title' => 'A blog post',
-                    'slug' => 'a-blog-post',
-                    'description' => 'My cool post',
-                    'publishDate' => '2023-07-04',
-                    'url' => route('post', ['slug' => 'a-blog-post']),
-                ]
-            ],
-            'prevPageUrl' => '/',
-            'nextPageUrl' => route('list', ['page' => 2]),
+            'posts' => $postsData,
+            'prevPageUrl' => $prevPageUrl,
+            'nextPageUrl' => $nextPageUrl,
         ];
 
         return Inertia::render('Blog/List', $props);
@@ -29,29 +41,14 @@ class BlogController extends Controller
 
     public function post(string $slug = ''): Response
     {
+        $post = Blog::getPost($slug);
+
+        if ($post === null) {
+            abort(404);
+        }
+
         $props = [
-            'post' => [
-                'title' => 'A blog post',
-                'slug' => 'a-blog-post',
-                'description' => 'My cool post',
-                'publishDate' => '2023-07-04',
-                'url' => route('post', ['slug' => 'a-blog-post']),
-                'contentItems' => [
-                    'items' => [
-                        [
-                            '__typename' => 'ContentText',
-                            'content' => '<p>First paragraph</p>',
-                        ],
-                        [
-                            '__typename' => 'ContentImage',
-                            'image' => [
-                                'description' => 'An image',
-                                'url' => 'https://images.ctfassets.net/75ususnkkmch/5teRi3fHXYkY4gKQ8a4UdL/9a18e6fc40f67528a74a61590a217654/ben-griffiths-4wxWBy8Jo1I-unsplash.jpg?h=250'
-                            ]
-                        ]
-                    ]
-                ]
-            ],
+            'post' => $post->getData(),
         ];
 
         return Inertia::render('Blog/Post', $props);

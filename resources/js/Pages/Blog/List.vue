@@ -11,13 +11,13 @@ const props = defineProps([
 
 <template>
     <Base>
-        <section id="list-nav">
-            <span>
+        <section id="list-nav" v-if="prevPageUrl !== null || nextPageUrl !== null">
+            <span v-if="prevPageUrl !== null">
                 <Link :href="prevPageUrl">
                     Newer
                 </Link>
             </span>
-            <span>
+            <span v-if="nextPageUrl !== null">
                 <Link :href="nextPageUrl">
                     Older
                 </Link>
@@ -32,8 +32,7 @@ const props = defineProps([
                     </h2>
                     <div >{{ post.publishDate }}</div>
                 </header>
-                <div>
-                    {{ post.description }}
+                <div v-html="post.description">
                 </div>
             </article>
         </div>
