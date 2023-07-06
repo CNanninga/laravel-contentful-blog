@@ -1,26 +1,22 @@
 <?php
 namespace App\Services\BlogContentfulRepository;
 
-use App\Contracts\Blog\Post;
+use App\Contracts\Blog\Author;
+use App\Contracts\Blog\Post as PostModel;
 use App\Services\ContentfulClient;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
-class Posts
+class PostAndAuthor
 {
     const QUERY = '
-query getPosts(
-    $limit: Int,
-    $skip: Int
-) {
+query getPost(
+    $slug: String!
+){
     postCollection(
-        order: [publishDate_DESC],
-        limit: $limit,
-        skip: $skip
+        limit: 1,
+        where: {slug: $slug}
     ) {
-        total
-        skip
-        limit
         items {
             title
             slug
@@ -28,6 +24,7 @@ query getPosts(
             publishDate
             contentItemsCollection {
                 items {
+                    __typename
                     ... on ContentText {
                         content
                     }
@@ -39,6 +36,19 @@ query getPosts(
                     }
                 }
             }
+        }
+    }
+    authorCollection(
+        limit: 1
+    ){
+        items {
+            name
+            image {
+                description
+                url
+            }
+            tagLine
+            linkedInUrl
         }
     }
 }
@@ -53,16 +63,14 @@ query getPosts(
     }
 
     public function execute(
-        int $limit = 10,
-        int $skip = 0
+        string $slug = ''
     ): array {
         $variables = [
-            'limit' => $limit,
-            'skip' => $skip,
+            'slug' => $slug,
         ];
 
-        $posts = [];
-        $totalPosts = 0;
+        $post = null;
+        $author = null;
 
         try {
             $result = $this->client->execute(self::QUERY, $variables);
@@ -70,13 +78,13 @@ query getPosts(
             Log::error($e->getMessage());
         }
 
-        if (isset($result['data']['postCollection']['items'])) {
-            $totalPosts = $result['data']['postCollection']['total'] ?? 0;
-            foreach ($result['data']['postCollection']['items'] as $postData) {
-                $posts[] = App::makeWith(Post::class, ['graphqlData' => $postData]);
-            }
+        if (isset($result['data']['postCollection']['items'][0])) {
+            $post = App::makeWith(PostModel::class, ['graphqlData' => $result['data']['postCollection']['items'][0]]);
+        }
+        if (isset($result['data']['authorCollection']['items'][0])) {
+            $author = App::makeWith(Author::class, ['graphqlData' => $result['data']['authorCollection']['items'][0]]);
         }
 
-        return [$posts, $totalPosts];
+        return [$post, $author];
     }
 }

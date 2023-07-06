@@ -4,22 +4,26 @@ import { Link } from '@inertiajs/vue3';
 import Base from '@/Components/Blog/Base.vue';
 
 const props = defineProps([
+    'copyrightYear',
+    'author',
     'post'
 ]);
 </script>
 
 <template>
-    <Base>
-        <article id="post">
-            <header>
-                <h2>{{ post.title }}</h2>
-                <div id="publish-date">{{ post.publishDate }}</div>
+    <Base :copyrightYear="copyrightYear" :author="author">
+        <article id="post" class="container-full text-xl mb-6">
+            <header class="border-l-8 border-slate-500 p-6 mb-6">
+                <h2 class="text-4xl">{{ post.title }}</h2>
+                <div id="publish-date" class="text-2xl">{{ post.publishDate }}</div>
             </header>
             <div>
                 <template v-if="post.contentItems.items">
                     <div v-for="(item, index) in post.contentItems.items" :key="index">
                         <div v-if="item.__typename == 'ContentText'" v-html="item.content"></div>
-                        <img v-if="item.__typename == 'ContentImage'" :alt="item.image.description" :src="item.image.url" />
+                        <img v-if="item.__typename == 'ContentImage'" :alt="item.image.description"
+                             :src="item.image.url"
+                            class="max-w-4xl block mx-auto my-4" />
                     </div>
                 </template>
             </div>

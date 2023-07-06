@@ -11,9 +11,16 @@ export default {
     ],
 
     theme: {
+        screens: {
+            'sm': '640px',
+            'md': '768px',
+            'lg': '1024px',
+            'xl': '1024px'
+        },
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Questrial', ...defaultTheme.fontFamily.sans],
+                headerSans: ['Poppins', ...defaultTheme.fontFamily.sans]
             },
         },
     },

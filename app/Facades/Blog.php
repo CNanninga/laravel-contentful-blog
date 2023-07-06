@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see BlogRepository
  *
- * @method static array getPosts(int $limit = 10, int $skip = 0)
- * @see BlogRepository::getPosts
+ * @method static array getPostsAndAuthor(int $limit = 10, int $skip = 0)
+ * @see BlogRepository::getPostsAndAuthor
  *
- * @method static Post getPost(string $slug)
- * @see BlogRepository::getPost
+ * @method static Post getPostAndAuthor(string $slug)
+ * @see BlogRepository::getPostAndAuthor
  */
 class Blog extends Facade
 {

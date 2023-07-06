@@ -8,15 +8,22 @@ interface BlogRepository
     /**
      * @return array(
      *      App\Contracts\Blog\Post[] $posts,
+     *      App\Contracts\Blog\Author $author,
      *      Int $totalPosts
      * )
      */
-    public function getPosts(
+    public function getPostsAndAuthor(
         int $limit = 10,
         int $skip = 0
     ): array;
 
-    public function getPost(
+    /**
+     * @return array(
+     *      App\Contracts\Blog\Post $post,
+     *      App\Contracts\Blog\Author $author,
+     * )
+     */
+    public function getPostAndAuthor(
         string $slug
-    ): Post;
+    ): array;
 }

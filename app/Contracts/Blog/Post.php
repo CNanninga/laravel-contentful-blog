@@ -5,6 +5,8 @@ interface Post
 {
     public function getTitle(): ?string;
 
+    public function getPublishDate(): ?string;
+
     public function getDescription(): ?string;
 
     public function getImage(): array;

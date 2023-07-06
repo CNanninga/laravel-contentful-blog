@@ -26,6 +26,19 @@ class PostContentful extends ContentfulAbstract implements Post
         return $this->data['title'];
     }
 
+    public function getPublishDate(): ?string
+    {
+        if (!isset($this->data['publishDate'])) {
+            $date = $this->graphqlData['publishDate'] ?? null;
+            if ($date) {
+                $date = new \DateTime($date);
+                $date = $date->format('F j, Y');
+            }
+            $this->data['publishDate'] = $date;
+        }
+        return $this->data['publishDate'];
+    }
+
     public function getDescription(): ?string
     {
         if (!isset($this->data['description'])) {
@@ -71,6 +84,7 @@ class PostContentful extends ContentfulAbstract implements Post
     protected function transformData(): void
     {
         $this->getTitle();
+        $this->getPublishDate();
         $this->getDescription();
         $this->getImage();
         $this->getSlug();
