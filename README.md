@@ -66,7 +66,7 @@ ln -s ${PERSIST_DIR}/.env ${DEPLOY_DIR}/.env
 (First time only) rsync -av ${DEPLOY_DIR}/storage/ ${PERSIST_DIR}/storage/
 rm -r ${DEPLOY_DIR}/storage
 ln -s ${PERSIST_DIR}/storage ${DEPLOY_DIR}/storage
-composer install --optimize-autoloader --no-dev
+~/bin/composer.phar install --optimize-autoloader --no-dev
 npm install
 php artisan config:cache
 php artisan view:cache
@@ -88,8 +88,8 @@ php artisan up
 4. Create database
 5. Issue SSL cert
 6. Force HTTPS redirect
-7. Make sure php, mysql client, composer and node/npm are installed
-8. Make sure required PHP extensions are loaded
-9. Generate SSH key and add to GitHub
+7. Make sure php, mysql client, node/npm are installed
+8. Install latest Composer in `~/bin`
+9. Make sure required PHP extensions are loaded
 10. Create .env and storage directory
-11. Copy scripts/deploy-*.sh into place and make executable
+11. Copy scripts/deploy.sh into place and make executable
