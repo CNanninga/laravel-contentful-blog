@@ -9,6 +9,7 @@ use Inertia\Response;
 class BlogController extends Controller
 {
     const POSTS_PER_PAGE = 6;
+    const PUBS_PER_PAGE = 10;
 
     private ThemeAssets $themeAssets;
 
@@ -69,5 +70,39 @@ class BlogController extends Controller
         );
 
         return Inertia::render('Blog/Post', $props);
+    }
+
+    public function pubs(int $page = 1): Response
+    {
+        $skip = ($page - 1)  * self::PUBS_PER_PAGE;
+
+        list($pubs, $author, $totalPubs) = Blog::getPublicationsAndAuthor(self::PUBS_PER_PAGE, $skip);
+
+        $prevPageUrl = $nextPageUrl = null;
+        if ($page > 1) {
+            $prevPage = $page - 1;
+            $prevPageUrl = ($prevPage === 1) ? route('publications-main') : route('publications', ['page' => $prevPage]);
+        }
+        if ($totalPubs > ($page * self::PUBS_PER_PAGE)) {
+            $nextPage = $page + 1;
+            $nextPageUrl = route('publications', ['page' => $nextPage]);
+        }
+
+        $pubsData = [];
+        foreach ($pubs as $pub) {
+            $pubsData[] = $pub->getData();
+        }
+
+        $props = array_merge(
+            $this->themeAssets->getGlobalProps(),
+            [
+                'author' => $author->getData(),
+                'publications' => $pubsData,
+                'prevPageUrl' => $prevPageUrl,
+                'nextPageUrl' => $nextPageUrl,
+            ]
+        );
+
+        return Inertia::render('Blog/PublicationsList', $props);
     }
 }

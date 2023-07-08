@@ -2,21 +2,20 @@
 namespace App\Services\BlogContentfulRepository;
 
 use App\Contracts\Blog\Author;
-use App\Contracts\Blog\Post;
+use App\Contracts\Blog\Publication;
 use App\Services\ContentfulClient;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
-class PostsAndAuthor
+class PublicationsAndAuthor
 {
     const QUERY = '
-query getPostsAndAuthor(
+query getPublicationsAndAuthor(
     $limit: Int,
     $skip: Int
 ) {
-    postCollection(
-        order: [publishDate_DESC],
-        where: {includeInList: true},
+    publicationCollection(
+        order: [publishDate_DESC]
         limit: $limit,
         skip: $skip
     ) {
@@ -25,26 +24,11 @@ query getPostsAndAuthor(
         limit
         items {
             title
-            slug
+            url
             description
             publishDate
-            image {
-                description
-                url
-            }
-            contentItemsCollection {
-                items {
-                    ... on ContentText {
-                        content
-                    }
-                    ... on ContentImage {
-                        image: content {
-                            description
-                            url
-                        }
-                    }
-                }
-            }
+            source
+            type
         }
     }
     authorCollection(
@@ -62,13 +46,12 @@ query getPostsAndAuthor(
     }
 }
 ';
-
     private ContentfulClient $client;
 
     public function __construct(
-        ContentfulClient $client
+        ContentfulClient $contentfulClient
     ) {
-        $this->client = $client;
+        $this->client = $contentfulClient;
     }
 
     public function execute(
@@ -81,8 +64,8 @@ query getPostsAndAuthor(
         ];
 
         $author = null;
-        $posts = [];
-        $totalPosts = 0;
+        $pubs = [];
+        $totalPubs = 0;
 
         try {
             $result = $this->client->execute(self::QUERY, $variables);
@@ -90,16 +73,16 @@ query getPostsAndAuthor(
             Log::error($e->getMessage());
         }
 
-        if (isset($result['data']['postCollection']['items'])) {
-            $totalPosts = $result['data']['postCollection']['total'] ?? 0;
-            foreach ($result['data']['postCollection']['items'] as $postData) {
-                $posts[] = App::makeWith(Post::class, ['graphqlData' => $postData]);
+        if (isset($result['data']['publicationCollection']['items'])) {
+            $totalPubs = $result['data']['publicationCollection']['total'] ?? 0;
+            foreach ($result['data']['publicationCollection']['items'] as $pubData) {
+                $pubs[] = App::makeWith(Publication::class, ['graphqlData' => $pubData]);
             }
         }
         if (isset($result['data']['authorCollection']['items'][0])) {
             $author = App::makeWith(Author::class, ['graphqlData' => $result['data']['authorCollection']['items'][0]]);
         }
 
-        return [$posts, $author, $totalPosts];
+        return [$pubs, $author, $totalPubs];
     }
 }

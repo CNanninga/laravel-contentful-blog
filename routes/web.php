@@ -25,3 +25,10 @@ Route::get('/posts/{page}', [BlogController::class, 'list'])
 
 Route::get('/post/{slug}', [BlogController::class, 'post'])
     ->name('post');
+
+Route::get('/publications', [BlogController::class, 'pubs'])
+    ->name('publications-main');
+
+Route::get('/publications/{page}', [BlogController::class, 'pubs'])
+    ->where(['page' => '[0-9]+'])
+    ->name('publications');

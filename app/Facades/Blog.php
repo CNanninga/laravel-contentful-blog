@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Facade;
  *
  * @method static Post getPostAndAuthor(string $slug)
  * @see BlogRepository::getPostAndAuthor
+ *
+ * @method static array getPublicationsAndAuthor(int $limit = 10, int $skip = 0)
+ * @see BlogRepository::getPublicationsAndAuthor
  */
 class Blog extends Facade
 {

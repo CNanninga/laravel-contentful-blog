@@ -1,7 +1,7 @@
 <?php
 namespace App\Contracts\Blog;
 
-interface Post
+interface Publication
 {
     public function getTitle(): ?string;
 
@@ -9,15 +9,11 @@ interface Post
 
     public function getDescription(): ?string;
 
-    public function getImage(): array;
-
-    public function getSlug(): ?string;
-
     public function getUrl(): ?string;
 
-    public function getContentItems(): array;
+    public function getSource(): ?string;
 
-    public function displayDate() : bool;
+    public function getType(): ?string;
 
     public function getData(): array;
 

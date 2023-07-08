@@ -5,6 +5,7 @@ import { Link } from '@inertiajs/vue3';
 
 const props = defineProps([
     'copyrightYear',
+    'navLinks',
     'author',
     'posts',
     'prevPageUrl',
@@ -13,11 +14,11 @@ const props = defineProps([
 </script>
 
 <template>
-    <Base :copyrightYear="copyrightYear" :author="author">
-        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl"></ListNav>
+    <Base :copyrightYear="copyrightYear" :navLinks="navLinks" :author="author">
+        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" unit-name="posts"></ListNav>
 
         <div id="post-list" class="container-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <article v-for="post in posts" :key="post.slug">
+            <article v-for="post in posts" :key="post.slug" class="px-8 md:px-0">
                 <img :src="post.image.url" />
                 <header>
                     <h2>
@@ -30,6 +31,6 @@ const props = defineProps([
             </article>
         </div>
 
-        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl"></ListNav>
+        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" unit-name="posts"></ListNav>
     </Base>
 </template>

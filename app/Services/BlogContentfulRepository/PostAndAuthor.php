@@ -22,6 +22,7 @@ query getPost(
             slug
             description
             publishDate
+            displayDate
             contentItemsCollection {
                 items {
                     __typename

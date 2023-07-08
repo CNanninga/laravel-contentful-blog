@@ -26,4 +26,16 @@ interface BlogRepository
     public function getPostAndAuthor(
         string $slug
     ): array;
+
+    /**
+     * @return array(
+     *      App\Contracts\Blog\Publication[] $pubs,
+     *      App\Contracts\Blog\Author $author,
+     *      Int $totalPubs
+     * )
+     */
+    public function getPublicationsAndAuthor(
+        int $limit = 10,
+        int $skip = 0
+    ): array;
 }

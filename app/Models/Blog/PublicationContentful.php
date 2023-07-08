@@ -1,11 +1,11 @@
 <?php
 namespace App\Models\Blog;
 
-use App\Contracts\Blog\Post;
+use App\Contracts\Blog\Publication;
 use App\Models\Blog\ContentfulAbstract;
 use App\Services\ContentfulFormatter;
 
-class PostContentful extends ContentfulAbstract implements Post
+class PublicationContentful extends ContentfulAbstract implements Publication
 {
     private ContentfulFormatter $contentfulFormatter;
 
@@ -48,46 +48,28 @@ class PostContentful extends ContentfulAbstract implements Post
         return $this->data['description'];
     }
 
-    public function getImage(): array
-    {
-        if (!isset($this->data['image'])) {
-            $this->data['image'] = $this->graphqlData['image'] ?? [];
-        }
-        return $this->data['image'];
-    }
-
-    public function getSlug(): ?string
-    {
-        if (!isset($this->data['slug'])) {
-            $this->data['slug'] = $this->graphqlData['slug'] ?? '';
-        }
-        return $this->data['slug'];
-    }
-
     public function getUrl(): ?string
     {
         if (!isset($this->data['url'])) {
-            $this->data['url'] = route('post', ['slug' => $this->graphqlData['slug']]) ?? '';
+            $this->data['url'] = $this->graphqlData['url'] ?? '';
         }
         return $this->data['url'];
     }
 
-    public function getContentItems(): array
+    public function getSource(): ?string
     {
-        if (!isset($this->data['contentItemsCollection']['items'])) {
-            $contentItems = $this->graphqlData['contentItemsCollection'] ?? [];
-            $this->data['contentItems'] = $this->contentfulFormatter->formatContentRows($contentItems);
+        if (!isset($this->data['source'])) {
+            $this->data['source'] = $this->graphqlData['source'] ?? '';
         }
-        return $this->data['contentItems'];
+        return $this->data['source'];
     }
 
-    public function displayDate() : bool
+    public function getType(): ?string
     {
-        if (!isset($this->data['displayDate'])) {
-            $this->data['displayDate'] = !isset($this->graphqlData['displayDate'])
-                || !($this->graphqlData['displayDate'] === FALSE);
+        if (!isset($this->data['type'])) {
+            $this->data['type'] = $this->graphqlData['type'] ?? '';
         }
-        return $this->data['displayDate'];
+        return $this->data['type'];
     }
 
     protected function transformData(): void
@@ -95,10 +77,8 @@ class PostContentful extends ContentfulAbstract implements Post
         $this->getTitle();
         $this->getPublishDate();
         $this->getDescription();
-        $this->getImage();
-        $this->getSlug();
         $this->getUrl();
-        $this->getContentItems();
-        $this->displayDate();
+        $this->getSource();
+        $this->getType();
     }
 }

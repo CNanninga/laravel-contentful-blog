@@ -6,6 +6,22 @@
     #site-header {
         display: grid;
         grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "title"
+            "nav";
+    }
+
+    #site-title {
+        grid-area: title;
+    }
+
+    #site-tag {
+        grid-area: tag;
+    }
+
+    #site-nav {
+        grid-area: nav;
     }
 
     body {
@@ -73,6 +89,9 @@
     @media(min-width: 768px) {
         #site-header {
             grid-template-columns: 3fr 1fr;
+            grid-template-areas:
+                "tag title"
+                "nav title";
         }
     }
 }

@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/vue3';
 const props = defineProps([
     'prevPageUrl',
     'nextPageUrl',
+    'unitName',
 ]);
 </script>
 
@@ -13,13 +14,13 @@ const props = defineProps([
         <span>
             <Link :href="prevPageUrl"
                   v-if="prevPageUrl !== null">
-                &lt; Newer posts
+                &lt; Newer {{ unitName }}
             </Link>
         </span>
         <span class="text-right">
             <Link :href="nextPageUrl"
                   v-if="nextPageUrl !== null">
-                Older posts &gt;
+                Older {{ unitName }} &gt;
             </Link>
         </span>
     </section>
