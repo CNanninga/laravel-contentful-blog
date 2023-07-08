@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Contracts\Blog\Author;
 use App\Facades\Blog;
 use App\Services\ThemeAssets;
 use Inertia\Inertia;
@@ -19,16 +20,34 @@ class BlogController extends Controller
         $this->themeAssets = $themeAssets;
     }
 
-    public function list(int $page = 1): Response
+    public function home(): Response
+    {
+        /** @var Author $author */
+        list($posts, $author, $totalPosts) = Blog::getPostsAndAuthor(self::POSTS_PER_PAGE, 0);
+        if ($author->enableBlogPosts()) {
+            return $this->list(1, [$posts, $author, $totalPosts]);
+        } else {
+            return $this->pubs(1);
+        }
+    }
+
+    public function list(int $page = 1, ?array $data = null): Response
     {
         $skip = ($page - 1)  * self::POSTS_PER_PAGE;
 
-        list($posts, $author, $totalPosts) = Blog::getPostsAndAuthor(self::POSTS_PER_PAGE, $skip);
+        if ($data === null) {
+            /** @var Author $author */
+            list($posts, $author, $totalPosts) = Blog::getPostsAndAuthor(self::POSTS_PER_PAGE, $skip);
+        } else {
+            /** @var Author $author */
+            list($posts, $author, $totalPosts) = $data;
+        }
 
         $prevPageUrl = $nextPageUrl = null;
         if ($page > 1) {
             $prevPage = $page - 1;
-            $prevPageUrl = ($prevPage === 1) ? route('home') : route('list', ['page' => $prevPage]);
+            $pageOneRoute = ($author->enableBlogPosts()) ? route('home') : route('list-main');
+            $prevPageUrl = ($prevPage === 1) ? $pageOneRoute : route('list', ['page' => $prevPage]);
         }
         if ($totalPosts > ($page * self::POSTS_PER_PAGE)) {
             $nextPage = $page + 1;
@@ -41,7 +60,7 @@ class BlogController extends Controller
         }
 
         $props = array_merge(
-            $this->themeAssets->getGlobalProps(),
+            $this->themeAssets->getGlobalProps($author->enableBlogPosts()),
             [
                 'author' => $author->getData(),
                 'posts' => $postsData,
@@ -55,6 +74,7 @@ class BlogController extends Controller
 
     public function post(string $slug = ''): Response
     {
+        /** @var Author $author */
         list($post, $author) = Blog::getPostAndAuthor($slug);
 
         if ($post === null) {
@@ -62,7 +82,7 @@ class BlogController extends Controller
         }
 
         $props = array_merge(
-            $this->themeAssets->getGlobalProps(),
+            $this->themeAssets->getGlobalProps($author->enableBlogPosts()),
             [
                 'author' => $author->getData(),
                 'post' => $post->getData(),
@@ -76,12 +96,14 @@ class BlogController extends Controller
     {
         $skip = ($page - 1)  * self::PUBS_PER_PAGE;
 
+        /** @var Author $author */
         list($pubs, $author, $totalPubs) = Blog::getPublicationsAndAuthor(self::PUBS_PER_PAGE, $skip);
 
         $prevPageUrl = $nextPageUrl = null;
         if ($page > 1) {
             $prevPage = $page - 1;
-            $prevPageUrl = ($prevPage === 1) ? route('publications-main') : route('publications', ['page' => $prevPage]);
+            $pageOneRoute = ($author->enableBlogPosts()) ? route('publications-main') : route('home');
+            $prevPageUrl = ($prevPage === 1) ? $pageOneRoute : route('publications', ['page' => $prevPage]);
         }
         if ($totalPubs > ($page * self::PUBS_PER_PAGE)) {
             $nextPage = $page + 1;
@@ -94,7 +116,7 @@ class BlogController extends Controller
         }
 
         $props = array_merge(
-            $this->themeAssets->getGlobalProps(),
+            $this->themeAssets->getGlobalProps($author->enableBlogPosts()),
             [
                 'author' => $author->getData(),
                 'publications' => $pubsData,

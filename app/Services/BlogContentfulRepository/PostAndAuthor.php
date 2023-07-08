@@ -50,6 +50,7 @@ query getPost(
             }
             tagLine
             linkedInUrl
+            enableBlogPosts
         }
     }
 }

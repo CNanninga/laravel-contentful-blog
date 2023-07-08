@@ -16,8 +16,11 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', [BlogController::class, 'list'])
+Route::get('/', [BlogController::class, 'home'])
     ->name('home');
+
+Route::get('/posts', [BlogController::class, 'list'])
+    ->name('list-main');
 
 Route::get('/posts/{page}', [BlogController::class, 'list'])
     ->where(['page' => '[0-9]+'])

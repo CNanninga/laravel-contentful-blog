@@ -11,6 +11,8 @@ interface Author
 
     public function getLinkedInUrl(): ?string;
 
+    public function enableBlogPosts(): bool;
+
     public function getData(): array;
 
 }

@@ -58,6 +58,7 @@ query getPostsAndAuthor(
             }
             tagLine
             linkedInUrl
+            enableBlogPosts
         }
     }
 }

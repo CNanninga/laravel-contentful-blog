@@ -50,11 +50,21 @@ class AuthorContentful extends ContentfulAbstract implements Author
         return $this->data['linkedInUrl'];
     }
 
+    public function enableBlogPosts(): bool
+    {
+        if (!isset($this->data['enableBlogPosts'])) {
+            $this->data['enableBlogPosts'] = isset($this->graphqlData['enableBlogPosts'])
+                && !($this->graphqlData['enableBlogPosts'] === FALSE);
+        }
+        return $this->data['enableBlogPosts'];
+    }
+
     protected function transformData(): void
     {
         $this->getName();
         $this->getImage();
         $this->getTagLine();
         $this->getLinkedInUrl();
+        $this->enableBlogPosts();
     }
 }
