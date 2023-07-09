@@ -15,7 +15,7 @@ const props = defineProps([
             <div id="site-header" class="container-full">
                 <section id="site-title" class="text-center md:text-right border-0 md:border-l border-slate-700 mb-4 md:mb-0">
                     <Link :href="route('home')" class="text-neutral-700 hover:text-neutral-700">
-                        <img :src="author.image.url" style="max-width: 150px" class="inline" />
+                        <img :src="author.image.url" style="max-width: 100px" class="inline" />
                         <h1 class="font-headerSans">{{ author.name }}</h1>
                     </Link>
                     <Link :href="author.linkedInUrl">Connect with me on LinkedIn</Link>
