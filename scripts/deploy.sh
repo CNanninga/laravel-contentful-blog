@@ -14,7 +14,7 @@ cd $DEPLOY_DIR
 ln -s ${PERSIST_DIR}/.env ${DEPLOY_DIR}/.env
 rm -r ${DEPLOY_DIR}/storage
 ln -s ${PERSIST_DIR}/storage ${DEPLOY_DIR}/storage
-~/bin/composer.phar install --optimize-autoloader --no-dev
+${USER_ROOT}/bin/composer.phar install --optimize-autoloader --no-dev
 npm install
 php artisan config:cache
 php artisan view:cache
