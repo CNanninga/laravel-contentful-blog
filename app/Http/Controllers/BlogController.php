@@ -10,7 +10,7 @@ use Inertia\Response;
 class BlogController extends Controller
 {
     const POSTS_PER_PAGE = 6;
-    const PUBS_PER_PAGE = 10;
+    const PUBS_PER_PAGE = 15;
 
     private ThemeAssets $themeAssets;
 
@@ -66,6 +66,7 @@ class BlogController extends Controller
                 'posts' => $postsData,
                 'prevPageUrl' => $prevPageUrl,
                 'nextPageUrl' => $nextPageUrl,
+                'paginateUnitName' => 'posts',
             ]
         );
 
@@ -92,22 +93,24 @@ class BlogController extends Controller
         return Inertia::render('Blog/Post', $props);
     }
 
-    public function pubs(int $page = 1): Response
+    public function pubs(int $page = 1, bool $courses = false): Response
     {
         $skip = ($page - 1)  * self::PUBS_PER_PAGE;
 
         /** @var Author $author */
-        list($pubs, $author, $totalPubs) = Blog::getPublicationsAndAuthor(self::PUBS_PER_PAGE, $skip);
+        list($pubs, $author, $totalPubs) = Blog::getPublicationsAndAuthor(self::PUBS_PER_PAGE, $skip, $courses);
 
         $prevPageUrl = $nextPageUrl = null;
+        $mainRoute = ($courses) ? 'courses-main' : 'publications-main';
+        $pageRoute = ($courses) ? 'courses' : 'publications';
         if ($page > 1) {
             $prevPage = $page - 1;
-            $pageOneRoute = ($author->enableBlogPosts()) ? route('publications-main') : route('home');
-            $prevPageUrl = ($prevPage === 1) ? $pageOneRoute : route('publications', ['page' => $prevPage]);
+            $pageOneRoute = ($author->enableBlogPosts() || $courses) ? route($mainRoute) : route('home');
+            $prevPageUrl = ($prevPage === 1) ? $pageOneRoute : route($pageRoute, ['page' => $prevPage]);
         }
         if ($totalPubs > ($page * self::PUBS_PER_PAGE)) {
             $nextPage = $page + 1;
-            $nextPageUrl = route('publications', ['page' => $nextPage]);
+            $nextPageUrl = route($pageRoute, ['page' => $nextPage]);
         }
 
         $pubsData = [];
@@ -122,9 +125,15 @@ class BlogController extends Controller
                 'publications' => $pubsData,
                 'prevPageUrl' => $prevPageUrl,
                 'nextPageUrl' => $nextPageUrl,
+                'paginateUnitName' => ($courses) ? 'Courses' : 'Publications',
             ]
         );
 
         return Inertia::render('Blog/PublicationsList', $props);
+    }
+
+    public function courses(int $page = 1): Response
+    {
+        return $this->pubs($page, true);
     }
 }

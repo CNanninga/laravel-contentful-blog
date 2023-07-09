@@ -36,6 +36,7 @@ interface BlogRepository
      */
     public function getPublicationsAndAuthor(
         int $limit = 10,
-        int $skip = 0
+        int $skip = 0,
+        bool $courses = false
     ): array;
 }

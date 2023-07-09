@@ -10,12 +10,13 @@ const props = defineProps([
     'posts',
     'prevPageUrl',
     'nextPageUrl',
+    'paginateUnitName',
 ]);
 </script>
 
 <template>
     <Base :copyrightYear="copyrightYear" :navLinks="navLinks" :author="author">
-        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" unit-name="posts"></ListNav>
+        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" :unit-name="paginateUnitName"></ListNav>
 
         <div id="post-list" class="container-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <article v-for="post in posts" :key="post.slug" class="px-8 md:px-0">
@@ -31,6 +32,6 @@ const props = defineProps([
             </article>
         </div>
 
-        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" unit-name="posts"></ListNav>
+        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" :unit-name="paginateUnitName"></ListNav>
     </Base>
 </template>

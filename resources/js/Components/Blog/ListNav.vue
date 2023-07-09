@@ -10,7 +10,7 @@ const props = defineProps([
 
 <template>
     <section id="list-nav" v-if="prevPageUrl !== null || nextPageUrl !== null"
-             class="container-full grid grid-cols-2 my-4">
+             class="container-full grid grid-cols-2 my-4 px-8 md:px-0">
         <span>
             <Link :href="prevPageUrl"
                   v-if="prevPageUrl !== null">

@@ -21,6 +21,10 @@ class ThemeAssets
                 'url' => ($enableBlogPosts) ? route('publications-main') : route('home'),
             ],
             [
+                'label' => 'Courses',
+                'url' => route('courses-main'),
+            ],
+            [
                 'label' => 'About Me',
                 'url' => route('post', ['slug' => self::ABOUT_ME_POST_SLUG]),
             ]

@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Log;
 
 class PublicationsAndAuthor
 {
+    const TYPE_COURSE = 'Training Course';
+
+    const COURSE_FILTER_TRUE = 'where: {type: "' . self::TYPE_COURSE . '"}';
+    const COURSE_FILTER_FALSE = 'where: {type_not: "' . self::TYPE_COURSE . '"}';
+
     const QUERY = '
 query getPublicationsAndAuthor(
     $limit: Int,
@@ -17,7 +22,8 @@ query getPublicationsAndAuthor(
     publicationCollection(
         order: [publishDate_DESC]
         limit: $limit,
-        skip: $skip
+        skip: $skip,
+        ${COURSE_FILTER}
     ) {
         total
         skip
@@ -57,7 +63,8 @@ query getPublicationsAndAuthor(
 
     public function execute(
         int $limit = 10,
-        int $skip = 0
+        int $skip = 0,
+        bool $courses = false
     ): array {
         $variables = [
             'limit' => $limit,
@@ -69,7 +76,7 @@ query getPublicationsAndAuthor(
         $totalPubs = 0;
 
         try {
-            $result = $this->client->execute(self::QUERY, $variables);
+            $result = $this->client->execute($this->getQuery($courses), $variables);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
@@ -85,5 +92,11 @@ query getPublicationsAndAuthor(
         }
 
         return [$pubs, $author, $totalPubs];
+    }
+
+    private function getQuery(bool $courses = false) : string
+    {
+        $filter = ($courses) ? self::COURSE_FILTER_TRUE : self::COURSE_FILTER_FALSE;
+        return str_replace('${COURSE_FILTER}', $filter, self::QUERY);
     }
 }

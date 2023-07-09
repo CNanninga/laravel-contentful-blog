@@ -10,12 +10,13 @@ const props = defineProps([
     'publications',
     'prevPageUrl',
     'nextPageUrl',
+    'paginateUnitName',
 ]);
 </script>
 
 <template>
     <Base :copyrightYear="copyrightYear" :navLinks="navLinks" :author="author">
-        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" unit-name="publications"></ListNav>
+        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" :unit-name="paginateUnitName"></ListNav>
 
         <div id="publication-list" class="container-full">
             <article v-for="publication in publications" :key="publication.title" class="mb-8 px-8 md:px-0">
@@ -34,6 +35,6 @@ const props = defineProps([
             </article>
         </div>
 
-        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" unit-name="publications"></ListNav>
+        <ListNav :prevPageUrl="prevPageUrl" :nextPageUrl="nextPageUrl" :unit-name="paginateUnitName"></ListNav>
     </Base>
 </template>

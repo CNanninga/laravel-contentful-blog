@@ -28,10 +28,11 @@ class BlogContentfulRepository implements BlogRepository
 
     public function getPublicationsAndAuthor(
         int $limit = 10,
-        int $skip = 0
+        int $skip = 0,
+        bool $courses = false
     ): array {
         /** @var PublicationsAndAuthor $repository */
         $repository = App::make(PublicationsAndAuthor::class);
-        return $repository->execute($limit, $skip);
+        return $repository->execute($limit, $skip, $courses);
     }
 }

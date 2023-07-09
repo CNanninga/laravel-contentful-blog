@@ -35,3 +35,10 @@ Route::get('/publications', [BlogController::class, 'pubs'])
 Route::get('/publications/{page}', [BlogController::class, 'pubs'])
     ->where(['page' => '[0-9]+'])
     ->name('publications');
+
+Route::get('/courses', [BlogController::class, 'courses'])
+    ->name('courses-main');
+
+Route::get('/courses/{page}', [BlogController::class, 'courses'])
+    ->where(['page' => '[0-9]+'])
+    ->name('courses');

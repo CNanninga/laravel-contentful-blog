@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const classes = computed(() => {
-    let classes = 'items-center text-xl font-bold font-headerSans';
+    let classes = 'items-center text-sm sm:text-base md:text-lg font-bold font-headerSans';
 
     if (!props.active) {
         classes += ' text-neutral-500 hover:text-neutral-500 cursor-default'
